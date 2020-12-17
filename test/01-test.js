@@ -6,9 +6,9 @@ describe("Badger Voting Share", function() {
     const bvs = await BVS.deploy();    
     await bvs.deployed();
     const votingTotalSupply = await bvs.totalSupply() / 1e18;
-    const badger = await bvs.badger();
-    const BADGER = await ethers.getContractAt("IERC20", badger);
-    const badgerTotalSupply = await BADGER.totalSupply() / 1e18;
+    const badgerAddress = "0x3472A5A71965499acd81997a54BBA8D852C6E53d";
+    const badger = await ethers.getContractAt("IERC20", badgerAddress);
+    const badgerTotalSupply = await badger.totalSupply() / 1e18;
     expect(votingTotalSupply).to.equal(badgerTotalSupply);
   });
 

@@ -30,30 +30,14 @@ interface IGeyser {
 }
 
 contract BadgerVotingShare {
-    IERC20 public constant badger = IERC20(
-        0x3472A5A71965499acd81997a54BBA8D852C6E53d
-    );
-    
-    ISett public constant sett_badger = ISett(
-        0x19D97D8fA813EE2f51aD4B4e04EA08bAf4DFfC28
-    );
-    
-    IGeyser public constant geyser_badger = IGeyser(
-        0xa9429271a28F8543eFFfa136994c0839E7d7bF77
-    );
+    IERC20 constant badger = IERC20(0x3472A5A71965499acd81997a54BBA8D852C6E53d);    
+    ISett constant sett_badger = ISett(0x19D97D8fA813EE2f51aD4B4e04EA08bAf4DFfC28);
+    IGeyser constant geyser_badger = IGeyser(0xa9429271a28F8543eFFfa136994c0839E7d7bF77);
     
     //Badger is token1
-    IUniswapV2Pair public constant badger_wBTC_UniV2 = IUniswapV2Pair(
-        0xcD7989894bc033581532D2cd88Da5db0A4b12859
-    );
-    
-    ISett public constant sett_badger_wBTC_UniV2 = ISett(
-        0x235c9e24D3FB2FAFd58a2E49D454Fdcd2DBf7FF1
-    );
-    
-    IGeyser public constant geyser_badger_wBTC_UniV2 = IGeyser(
-        0xA207D69Ea6Fb967E54baA8639c408c31767Ba62D
-    );  
+    IUniswapV2Pair constant badger_wBTC_UniV2 = IUniswapV2Pair(0xcD7989894bc033581532D2cd88Da5db0A4b12859);
+    ISett constant sett_badger_wBTC_UniV2 = ISett(0x235c9e24D3FB2FAFd58a2E49D454Fdcd2DBf7FF1);
+    IGeyser constant geyser_badger_wBTC_UniV2 = IGeyser(0xA207D69Ea6Fb967E54baA8639c408c31767Ba62D);  
 
     function decimals() external pure returns (uint8) {
         return uint8(18);
