@@ -38,6 +38,11 @@ contract BadgerVotingShare {
     IUniswapV2Pair constant badger_wBTC_UniV2 = IUniswapV2Pair(0xcD7989894bc033581532D2cd88Da5db0A4b12859);
     ISett constant sett_badger_wBTC_UniV2 = ISett(0x235c9e24D3FB2FAFd58a2E49D454Fdcd2DBf7FF1);
     IGeyser constant geyser_badger_wBTC_UniV2 = IGeyser(0xA207D69Ea6Fb967E54baA8639c408c31767Ba62D);  
+    
+    //Badger is token1
+    IUniswapV2Pair constant badger_wBTC_SLP = IUniswapV2Pair(0x110492b31c59716AC47337E616804E3E3AdC0b4a);
+    ISett constant sett_badger_wBTC_SLP = ISett(0x1862A18181346EBd9EdAf800804f89190DeF24a5);
+    IGeyser constant geyser_badger_wBTC_SLP = IGeyser(0xB5b654efBA23596Ed49FAdE44F7e67E23D6712e7);  
 
     function decimals() external pure returns (uint8) {
         return uint8(18);
@@ -73,6 +78,23 @@ contract BadgerVotingShare {
     }
     
     /*
+        The voter can have Badger in Uniswap in 3 configurations:
+         * Staked bUni-V2 in Geyser
+         * Unstaked bUni-V2 (same as staked Uni-V2 in Sett)
+         * Unstaked Uni-V2
+        The top two correspond to more than 1 Uni-V2, so they are multiplied by pricePerFullShare.
+        After adding all 3 balances we calculate how much BADGER it corresponds to using the pool's reserves.
+    */
+    function _sushiswapBalanceOf(address _voter) internal view returns(uint) {
+        uint bSLPPricePerShare = sett_badger_wBTC_SLP.getPricePerFullShare();
+        (, uint112 reserve1, ) = badger_wBTC_SLP.getReserves();
+        uint totalSLPBalance = badger_wBTC_SLP.balanceOf(_voter)
+            + sett_badger_wBTC_SLP.balanceOf(_voter) * bSLPPricePerShare / 1e18 
+            + geyser_badger_wBTC_SLP.totalStakedFor(_voter) * bSLPPricePerShare / 1e18;
+        return totalSLPBalance * reserve1 / badger_wBTC_SLP.totalSupply();
+    }
+    
+    /*
         The voter can have regular Badger in 3 configurations as well:
          * Staked bBadger in Geyser
          * Unstaked bBadger (same as staked Badger in Sett)
@@ -86,7 +108,7 @@ contract BadgerVotingShare {
     }
 
     function balanceOf(address _voter) external view returns (uint) {
-        return _badgerBalanceOf(_voter) + _uniswapBalanceOf(_voter);
+        return _badgerBalanceOf(_voter) + _uniswapBalanceOf(_voter) + _sushiswapBalanceOf(_voter);
     }
 
     constructor() {}

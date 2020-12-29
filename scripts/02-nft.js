@@ -3,12 +3,14 @@ const MEME_ABI = [{"inputs":[{"internalType":"address","name":"_proxyRegistryAdd
 const MEME_ADDRESS = "0xe4605d46fd0b3f8329d936a8b258d69276cba264"
 
 const main = async () => {
-    const nodeURL = "https://eth-mainnet.alchemyapi.io/v2/" + process.env.ALCHEMY_API_KEY
+    const nodeURL = process.env.NODE_URL
+    console.log(nodeURL);
     const provider = new ethers.providers.JsonRpcProvider(nodeURL)
     const MEME = new ethers.Contract(MEME_ADDRESS, MEME_ABI, provider);
-    const filter = MEME.filters.TransferSingle(null, "0x0000000000000000000000000000000000000000");
-    const events = await MEME.queryFilter(filter, -50000);
-    var nftAccounts = {};;
+    const filter = MEME.filters.TransferSingle();
+    const events = await MEME.queryFilter(filter);
+    var nftAccounts = {};
+    console.log(events.length);
     for (const e of events)
         if (e.args._id >= 97 && e.args._id <= 102) {
             if (!nftAccounts[e.args._id]) {
